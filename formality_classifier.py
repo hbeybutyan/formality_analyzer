@@ -87,15 +87,15 @@ def classify_sentances(sentences):
     if not os.path.exists(OUT_DIR):
         os.makedirs(OUT_DIR)
     sent_per_thread = len(sentences) / cpu_count()
-    cpu_cnt = cpu_count()
+
     chunks = []
-    for i in range(cpu_count()):
+    for i in range(10000):
         print("Starting process %d..." % i)
         fr = int(i * sent_per_thread)
         to = int((i+1) * sent_per_thread)
         snt = sentences[fr: to]
         chunks.append(snt)
-    pool = Pool(cpu_cnt)
+    pool = Pool(cpu_count())
     pool.map(proc_sents_async, chunks)
 
 if not os.path.exists(os.path.join(OUT_DIR, SENT_PATH)):
