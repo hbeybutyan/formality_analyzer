@@ -101,4 +101,4 @@ def classify_sentances(sentences):
 sentences = get_sentances(L6_CORP_PATH)
 print('Loaded %s sentences.' % len(sentences))
 print('Classifying...')
-classify_sentances(sentences, MODEL_PATH, MAX_SEQUENCE_LENGTH, FORMAL_PATH, INFORMAL_PATH)
+classify_sentances(sentences)
