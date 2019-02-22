@@ -4,10 +4,11 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 import numpy as np
 
-L6_CORP_PATH = "/home/strata/univ/image-processing/thesis/resources/small_sample.xml"
-FORMAL_PATH = "/home/strata/univ/image-processing/thesis/resources/formal"
-INFORMAL_PATH = "/home/strata/univ/image-processing/thesis/resources/informal"
-MODEL_PATH = "/home/strata/univ/image-processing/thesis/resources/models/formality_classifier.hdf5_con1"
+L6_CORP_PATH = "/home/strata/formality_analyzer/resources/FullOct2007.xml"
+#L6_CORP_PATH = "/home/strata/formality_analyzer/resources/small_sample.xml"
+FORMAL_PATH = "/home/strata/formality_analyzer/resources/formal"
+INFORMAL_PATH = "/home/strata/formality_analyzer/resources/informal"
+MODEL_PATH = "/home/strata/formality_analyzer/resources/models/formality_classifier.hdf5_con1"
 MAX_NUM_WORDS = 50000
 MAX_SEQUENCE_LENGTH = 128
 
@@ -18,10 +19,17 @@ def get_sentances(corp_path):
     slitted = []
     for child in tree:
         if child[0].find('qlang').text == "en":
-            sents.extend(child[0].find('content').text.split('.'))
-            sents.extend(child[0].find('bestanswer').text.split('.'))
-            for answ in child[0].find('nbestanswers'):
-                sents.extend(answ.text.split('.'))
+            to_spl = child[0].find('content')
+            if to_spl is not None and to_spl.text:
+                sents.extend(to_spl.text.split('.'))
+            to_spl = child[0].find('bestanswer')
+            if to_spl is not None and to_spl.text:
+                sents.extend(to_spl.text.split('.'))
+            best = child[0].find('nbestanswers')
+            if best is not None:
+                for answ in best:
+                    if answ is not None and answ.text:
+                        sents.extend(answ.text.split('.'))
     for sent in sents:
         slitted.extend(sent.split('<br />'))
     to_return = [st.replace('<br />', ' ').replace('\n', '').strip() for st in slitted if st and not 'http' in st]
