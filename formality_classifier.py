@@ -8,8 +8,9 @@ L6_CORP_PATH = "/home/strata/formality_analyzer/resources/FullOct2007.xml"
 #L6_CORP_PATH = "/home/strata/formality_analyzer/resources/small_sample.xml"
 FORMAL_PATH = "formal"
 INFORMAL_PATH = "informal"
+SENT_PATH = "sentences"
 MODEL_PATH = "/home/strata/formality_analyzer/resources/models/formality_classifier.hdf5_con1"
-OUT_DIR = "/home/strata/univ/image-processing/thesis/resources/output"
+OUT_DIR = "/home/strata/formality_analyzer/resources/output"
 MAX_NUM_WORDS = 50000
 MAX_SEQUENCE_LENGTH = 128
 
@@ -97,8 +98,14 @@ def classify_sentances(sentences):
     pool = Pool(cpu_cnt)
     pool.map(proc_sents_async, chunks)
 
-
-sentences = get_sentances(L6_CORP_PATH)
+if not os.path.exists(os.path.join(OUT_DIR, SENT_PATH)):
+    print("Reading XML ...")
+    sentences = get_sentances(L6_CORP_PATH)
+    with open(os.path.join(OUT_DIR, SENT_PATH), 'w') as f:
+        f.writelines("%s\n" % sent for sent in sentences)
+else:
+    with open(os.path.join(OUT_DIR, SENT_PATH), 'r') as f:
+        sentences = f.readlines()
 print('Loaded %s sentences.' % len(sentences))
 print('Classifying...')
 classify_sentances(sentences)
